@@ -55,14 +55,27 @@ class Libro(models.Model):
 
 #Autor
 class Autor(models.Model):
-    id_autor = models.SmallAutoField(primary_key=True)
+    id_autor     = models.SmallAutoField(primary_key=True)
     nombre_autor = models.CharField(unique=True, max_length=50) #unique
-    pseudonimo = models.CharField(unique=True, max_length=50, blank=True, null=True) #unique, opcional
+    pseudonimo   = models.CharField(unique=True, max_length=50, blank=True, null=True) #unique, opcional
 
     def __str__(self):
         if (self.pseudonimo):
             return self.pseudonimo
         else:
             return self.nombre_autor
+
+##############################################################################################################
+
+#Autor por libro
+class AutorPorLibro(models.Model):
+    libro = models.ForeignKey(Libro, on_delete=models.CASCADE) #FK de libro
+    autor = models.ForeignKey(Autor, on_delete=models.CASCADE) #FK de autor
+
+    def __str__(self):
+        return f"{self.libro} - {self.autor}"
+
+    class Meta:
+        unique_together = ('libro', 'autor') #restriccion unica de ambos campos para emular pk dual con fk de tabla de interseccion
 
 ##############################################################################################################
