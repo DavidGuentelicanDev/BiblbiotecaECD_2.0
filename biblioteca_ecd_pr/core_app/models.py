@@ -82,20 +82,23 @@ class AutorPorLibro(models.Model):
 ##############################################################################################################
 
 #Usuario, usando clase abstracta para aprovechar todos los metodos prediseñados de django
-# class Usuario(AbstractUser):
-#     #diccionario de roles de usuario
-#     ROLES_USUARIO = [
-#         (1, 'Administrador'),
-#         (2, 'Bibliotecario'),
-#         (3, 'Recepción'),
-#         (4, 'Cliente')
-#     ]
+class Usuario(AbstractUser):
+    #diccionario de roles de usuario
+    ROLES_USUARIO = [
+        (1, 'Administrador'),
+        (2, 'Bibliotecario'),
+        (3, 'Recepción'),
+        (4, 'Cliente')
+    ]
 
-#     first_name = models.CharField(max_length=50)
-#     last_name = models.CharField(max_length=50)
-#     rut = models.CharField(unique=True, max_length=12) #unique
-#     email = models.EmailField(unique=True) #unique
-#     telefono = models.CharField(max_length=15, blank=True, null=True)
-#     rol = models.PositiveSmallIntegerField(choices=ROLES_USUARIO, default=4)
+    first_name = models.CharField(max_length=50)
+    last_name  = models.CharField(max_length=50)
+    rut        = models.CharField(unique=True, max_length=12) #unique
+    email      = models.EmailField(unique=True) #unique
+    telefono   = models.CharField(max_length=15, blank=True, null=True)
+    rol        = models.PositiveSmallIntegerField(choices=ROLES_USUARIO, default=4)
+
+    def __str__(self):
+        return self.username
 
 ##############################################################################################################
