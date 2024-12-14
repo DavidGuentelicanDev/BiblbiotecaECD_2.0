@@ -6,7 +6,7 @@ from django.db import models
 #Editorial
 class Editorial(models.Model):
     id_editorial     = models.SmallAutoField(primary_key=True)
-    nombre_editorial = models.CharField(unique=True, max_length=40) #unique, para evitar que se repita
+    nombre_editorial = models.CharField(unique=True, max_length=40) #unique
 
     def __str__(self):
         return self.nombre_editorial
@@ -50,5 +50,19 @@ class Libro(models.Model):
             return f"{self.titulo}. {self.subtitulo}"
         else:
             return self.titulo
+
+##############################################################################################################
+
+#Autor
+class Autor(models.Model):
+    id_autor = models.SmallAutoField(primary_key=True)
+    nombre_autor = models.CharField(unique=True, max_length=50) #unique
+    pseudonimo = models.CharField(unique=True, max_length=50, blank=True, null=True) #unique, opcional
+
+    def __str__(self):
+        if (self.pseudonimo):
+            return self.pseudonimo
+        else:
+            return self.nombre_autor
 
 ##############################################################################################################
