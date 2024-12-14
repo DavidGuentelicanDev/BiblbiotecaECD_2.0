@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
 
 # MODELO DE CLASES ORM
@@ -77,5 +78,24 @@ class AutorPorLibro(models.Model):
 
     class Meta:
         unique_together = ('libro', 'autor') #restriccion unica de ambos campos para emular pk dual con fk de tabla de interseccion
+
+##############################################################################################################
+
+#Usuario, usando clase abstracta para aprovechar todos los metodos prediseñados de django
+# class Usuario(AbstractUser):
+#     #diccionario de roles de usuario
+#     ROLES_USUARIO = [
+#         (1, 'Administrador'),
+#         (2, 'Bibliotecario'),
+#         (3, 'Recepción'),
+#         (4, 'Cliente')
+#     ]
+
+#     first_name = models.CharField(max_length=50)
+#     last_name = models.CharField(max_length=50)
+#     rut = models.CharField(unique=True, max_length=12) #unique
+#     email = models.EmailField(unique=True) #unique
+#     telefono = models.CharField(max_length=15, blank=True, null=True)
+#     rol = models.PositiveSmallIntegerField(choices=ROLES_USUARIO, default=4)
 
 ##############################################################################################################
