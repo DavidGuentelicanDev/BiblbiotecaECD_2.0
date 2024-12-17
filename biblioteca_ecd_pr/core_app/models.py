@@ -117,19 +117,40 @@ class Reserva(models.Model):
         (8, 'Cancelada') #cancelada por el usuario o por sistema
     ]
 
-    numero_reserva = models.BigAutoField(primary_key=True)
-    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-    fecha_creacion = models.DateTimeField(auto_now_add=True)
-    cantidad_libros = models.PositiveSmallIntegerField(default=0)
+    numero_reserva     = models.BigAutoField(primary_key=True)
+    usuario            = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    fecha_creacion     = models.DateTimeField(auto_now_add=True)
+    cantidad_libros    = models.PositiveSmallIntegerField(default=0)
     fecha_confirmacion = models.DateField(blank=True, null=True)
-    fecha_compromiso = models.DateField(blank=True, null=True)
+    fecha_compromiso   = models.DateField(blank=True, null=True)
     fecha_lista_retiro = models.DateField(blank=True, null=True)
-    fecha_max_retiro = models.DateField(blank=True, null=True)
-    fecha_retiro = models.DateField(blank=True, null=True)
-    fecha_cancelacion = models.DateField(blank=True, null=True)
-    estado_reserva = models.PositiveSmallIntegerField(choices=ESTADOS_RESERVA, default=1)
+    fecha_max_retiro   = models.DateField(blank=True, null=True)
+    fecha_retiro       = models.DateField(blank=True, null=True)
+    fecha_cancelacion  = models.DateField(blank=True, null=True)
+    estado_reserva     = models.PositiveSmallIntegerField(choices=ESTADOS_RESERVA, default=1)
 
     def __str__(self):
         return self.numero_reserva
 
 ##############################################################################################################
+
+#Detalle reserva
+class DetalleReserva(models.Model):
+    #diccionario estados detalle reserva
+    ESTADOS_DETALLE = [
+        (1, 'Reservado'), #libro recien reservado
+        (2, 'Prestado'), #libro ya en manos del usuario
+        (3, 'Devuelto'), #libro devuelto
+        (4, 'Atrasado'), #libro no devuelto
+        (5, 'Perdido') #libro perdido
+    ]
+
+    id_detalle_reserva = models.BigAutoField(primary_key=True)
+    reserva = models.ForeignKey(Reserva, on_delete=models.CASCADE)
+    libro = models.ForeignKey(Libro, on_delete=models.CASCADE)
+    estado_detalle_reserva = models.PositiveSmallIntegerField(choices=ESTADOS_DETALLE, default=1)
+    fecha_max_devolucion = models.DateField(blank=True, null=True) #se calcula segun la logica de negocio
+    fecha_devolucion = models.DateField(blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.reserva} - {self.libro}"
