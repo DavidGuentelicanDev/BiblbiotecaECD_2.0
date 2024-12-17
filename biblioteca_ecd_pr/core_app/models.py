@@ -123,6 +123,13 @@ class Usuario(AbstractUser):
     def __str__(self):
         return self.username
 
+    class Meta:
+        #indices
+        indexes = [
+            models.Index(fields=['rut'], name='Usuario_rut_idx'),
+            models.Index(fields=['rol'], name='Usuario_rol_idx')
+        ]
+
 ##############################################################################################################
 
 #Reserva
