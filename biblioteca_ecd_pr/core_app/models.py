@@ -53,6 +53,7 @@ class Libro(models.Model):
             return self.titulo
 
     class Meta:
+        #indices
         indexes = [
             models.Index(fields=['titulo'], name='Libro_titulo_idx'),
             models.Index(fields=['categoria'], name='Libro_categoria_idx'),
@@ -85,7 +86,8 @@ class AutorPorLibro(models.Model):
         return f"{self.libro} - {self.autor}"
 
     class Meta:
-        unique_together = ('libro', 'autor') #restriccion unica de ambos campos para emular pk dual con fk de tabla de interseccion
+        constraints = [models.UniqueConstraint(fields=['libro', 'autor'], name='AutorPorLibro_libroautor_un')] #unique doble
+        #unique_together = ('libro', 'autor') #restriccion unica de ambos campos para emular pk dual con fk de tabla de interseccion
         #indices
         indexes = [
             models.Index(fields=['libro'], name='AutorPorLibro_libro_idx'),
