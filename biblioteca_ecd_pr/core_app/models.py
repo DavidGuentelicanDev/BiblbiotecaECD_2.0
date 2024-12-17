@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
 from datetime import timedelta
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 # MODELO DE CLASES ORM
@@ -147,7 +148,14 @@ class Reserva(models.Model):
     fecha_max_retiro   = models.DateField(blank=True, null=True)
     fecha_retiro       = models.DateField(blank=True, null=True)
     fecha_cancelacion  = models.DateField(blank=True, null=True)
-    estado_reserva     = models.PositiveSmallIntegerField(choices=ESTADOS_RESERVA, default=1)
+    estado_reserva     = models.PositiveSmallIntegerField(
+        choices=ESTADOS_RESERVA,
+        default=1,
+        validators=[
+            MinValueValidator(1, message="Valor mínimo de estado_reserva es 1"),
+            MaxValueValidator(8, message="Valor máximo de estado_reserva es 8")
+        ]
+    )
 
     def __str__(self):
         return str(self.numero_reserva)
