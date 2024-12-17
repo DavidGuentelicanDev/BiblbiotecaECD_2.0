@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.utils import timezone
+from datetime import timedelta
 
 
 # MODELO DE CLASES ORM
@@ -148,7 +150,29 @@ class Reserva(models.Model):
     estado_reserva     = models.PositiveSmallIntegerField(choices=ESTADOS_RESERVA, default=1)
 
     def __str__(self):
-        return self.numero_reserva
+        return str(self.numero_reserva)
+
+    #metodo save para ir guardando las fechas opcionales segun el cambio de estado
+    def save(self, *args, **kwargs):
+        #si cambia de provisoria a reservada
+        if self.estado_reserva == 2:
+            if not self.fecha_confirmacion:
+                self.fecha_confirmacion = timezone.now().date() #fecha confirmacion la fecha del sistema
+            if not self.fecha_compromiso:
+                self.fecha_compromiso = timezone.now().date() + timedelta(days=2) #fecha de compromiso la fecha del sistema +2
+        #si cambia de reservada a lista para retiro
+        elif self.estado_reserva == 3:
+            if not self.fecha_lista_retiro:
+                self.fecha_lista_retiro = timezone.now().date() #fecha lista para retiro la fecha del sistema
+            if not self.fecha_max_retiro:
+                self.fecha_max_retiro = timezone.now().date() + timedelta(days=7) #fecha max de retiro +7 dias luego de estar lista para retiro
+        #si cambia de lista para retiro a retirada
+        elif self.estado_reserva == 4 and not self.fecha_retiro:
+            self.fecha_retiro = timezone.now().date() #fecha de retiro la fecha en que el cliente retire la reserva
+        #si cambia de cualquier estado a cancelada
+        elif self.estado_reserva == 8 and not self.fecha_cancelacion:
+            self.fecha_cancelacion = timezone.now().date() #fecha de cancelacion cuando el cliente cancele o se cancele por nuestro sistema (siempre manual)
+        super().save(*args, **kwargs)
 
     class Meta:
         indexes = [
