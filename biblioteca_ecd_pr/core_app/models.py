@@ -13,7 +13,7 @@ class Editorial(models.Model):
         return self.nombre_editorial
 
     class Meta:
-        indexes = [models.Index(fields=['nombre_editorial'], name='Editorial_nombre_idx')]
+        indexes = [models.Index(fields=['nombre_editorial'], name='Editorial_nombre_idx')] #index para nombre de editorial
 
 ##############################################################################################################
 
@@ -55,6 +55,14 @@ class Libro(models.Model):
         else:
             return self.titulo
 
+    class Meta:
+        indexes = [
+            models.Index(fields=['titulo'], name='Libro_titulo_idx'),
+            models.Index(fields=['categoria'], name='Libro_categoria_idx'),
+            models.Index(fields=['editorial'], name='Libro_editorial_idx'),
+            models.Index(fields=['estado_libro'], name='Libro_estado_idx')
+        ]
+
 ##############################################################################################################
 
 #Autor
@@ -68,6 +76,12 @@ class Autor(models.Model):
             return self.pseudonimo
         else:
             return self.nombre_autor
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['nombre_autor'], name='Autor_nombre_idx'),
+            models.Index(fields=['pseudonimo'], name='Autor_pseudonimo_idx')
+        ]
 
 ##############################################################################################################
 
