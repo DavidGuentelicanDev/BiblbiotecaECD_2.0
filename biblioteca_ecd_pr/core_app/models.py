@@ -87,7 +87,6 @@ class AutorPorLibro(models.Model):
 
     class Meta:
         constraints = [models.UniqueConstraint(fields=['libro', 'autor'], name='AutorPorLibro_libroautor_un')] #unique doble
-        #unique_together = ('libro', 'autor') #restriccion unica de ambos campos para emular pk dual con fk de tabla de interseccion
         #indices
         indexes = [
             models.Index(fields=['libro'], name='AutorPorLibro_libro_idx'),
@@ -183,7 +182,7 @@ class DetalleReserva(models.Model):
         return f"{self.reserva} - {self.libro}"
 
     class Meta:
-        unique_together = ('reserva', 'libro') #no se puede repetir el libro en la misma reserva
+        constraints = [models.UniqueConstraint(fields=['reserva', 'libro'], name='DetalleReserva_reservalibro_un')] #unique doble
         #indices
         indexes = [
             models.Index(fields=['reserva'], name='DetalleReserva_reserva_idx'),
@@ -205,7 +204,7 @@ class Multa(models.Model):
         return f"{self.usuario} - {self.detalle_reserva}"
 
     class Meta:
-        unique_together = ('usuario', 'detalle_reserva') #solo puede haber una multa por detallereserva
+        constraints = [models.UniqueConstraint(fields=['usuario', 'detalle_reserva'], name='Multa_usuariodetalle_un')] #unique doble
         #indices
         indexes = [
             models.Index(fields=['usuario'], name='Multa_usuario_idx'),
