@@ -145,12 +145,30 @@ class DetalleReserva(models.Model):
         (5, 'Perdido') #libro perdido
     ]
 
-    id_detalle_reserva = models.BigAutoField(primary_key=True)
-    reserva = models.ForeignKey(Reserva, on_delete=models.CASCADE)
-    libro = models.ForeignKey(Libro, on_delete=models.CASCADE)
+    id_detalle_reserva     = models.BigAutoField(primary_key=True)
+    reserva                = models.ForeignKey(Reserva, on_delete=models.CASCADE)
+    libro                  = models.ForeignKey(Libro, on_delete=models.CASCADE)
     estado_detalle_reserva = models.PositiveSmallIntegerField(choices=ESTADOS_DETALLE, default=1)
-    fecha_max_devolucion = models.DateField(blank=True, null=True) #se calcula segun la logica de negocio
-    fecha_devolucion = models.DateField(blank=True, null=True)
+    fecha_max_devolucion   = models.DateField(blank=True, null=True) #se calcula segun la logica de negocio
+    fecha_devolucion       = models.DateField(blank=True, null=True)
 
     def __str__(self):
         return f"{self.reserva} - {self.libro}"
+
+    class Meta:
+        unique_together = ('reserva', 'libro') #no se puede repetir el libro en la misma reserva
+
+##############################################################################################################
+
+#Multa
+class Multa(models.Model):
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    detalle_reserva = models.ForeignKey(DetalleReserva, on_delete=models.CASCADE)
+    dias_atraso = models.PositiveSmallIntegerField(default=1)
+    monto_multa = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return f"{self.usuario} - {self.detalle_reserva}"
+
+    class Meta:
+        unique_together = ('usuario', 'detalle_reserva') #solo puede haber una multa por detallereserva
