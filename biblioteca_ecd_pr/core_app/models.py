@@ -3,6 +3,8 @@ from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
 from datetime import timedelta
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 
 
 # MODELO DE CLASES ORM
@@ -207,6 +209,7 @@ class Reserva(models.Model):
         super().save(*args, **kwargs)
 
     class Meta:
+        #indices
         indexes = [
             models.Index(fields=['usuario'], name='Reserva_usuario_idx'),
             models.Index(fields=['fecha_compromiso'], name='Reserva_feccom_idx'),
@@ -245,6 +248,25 @@ class DetalleReserva(models.Model):
     def __str__(self):
         return f"{self.reserva} - {self.libro}"
 
+
+    #cambiar metodo save para la logica de negocio
+    def save(self, *args, **kwargs):
+        #verificar si es una nueva instancia
+        nueva_instancia = self._state.adding
+        super().save(*args, **kwargs) #guarda el detalle reserva para luego otras validaciones
+        #si es una nueva instancia entonces aumenta la cantidad de libros en reserva
+        if nueva_instancia:
+            self.reserva.cantidad_libros += 1
+            self.reserva.save()
+
+    #cambiar el metodo delete por si se borra un detalle reserva
+    # def delete(self, *args, **kwargs):
+    #     if self.reserva.cantidad_libros > 0:
+    #         self.reserva.cantidad_libros -= 1
+    #         self.reserva.save()
+    #     super().delete(*args, **kwargs)
+
+
     class Meta:
         constraints = [models.UniqueConstraint(fields=['reserva', 'libro'], name='DetalleReserva_reservalibro_un')] #unique doble
         #indices
@@ -278,3 +300,13 @@ class Multa(models.Model):
         ]
 
 ##############################################################################################################
+
+
+#SEÑALES PARA POST_SAVE Y POST_DELETE
+
+#Señal para disminuir cantidad_libros de reserva al eliminiar un detallereserva
+@receiver(post_delete, sender=DetalleReserva)
+def actualizar_cantidad_libros_al_eliminar(sender, instance, **kwargs):
+    if instance.reserva.cantidad_libros > 0:
+        instance.reserva.cantidad_libros -= 1
+        instance.reserva.save()
