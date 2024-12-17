@@ -187,6 +187,13 @@ class DetalleReserva(models.Model):
 
     class Meta:
         unique_together = ('reserva', 'libro') #no se puede repetir el libro en la misma reserva
+        #indices
+        indexes = [
+            models.Index(fields=['reserva'], name='DetalleReserva_reserva_idx'),
+            models.Index(fields=['libro'], name='DetalleReserva_libro_idx'),
+            models.Index(fields=['estado_detalle_reserva'], name='DetalleReserva_estado_idx'),
+            models.Index(fields=['fecha_max_devolucion'], name='DetalleReserva_fecmaxdev_idx')
+        ]
 
 ##############################################################################################################
 
