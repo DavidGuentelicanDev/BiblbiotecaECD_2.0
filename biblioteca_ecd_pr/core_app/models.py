@@ -209,5 +209,12 @@ class Multa(models.Model):
 
     class Meta:
         unique_together = ('usuario', 'detalle_reserva') #solo puede haber una multa por detallereserva
+        #indices
+        indexes = [
+            models.Index(fields=['usuario'], name='Multa_usuario_idx'),
+            models.Index(fields=['detalle_reserva'], name='Multa_detalle_idx'),
+            models.Index(fields=['dias_atraso'], name='Multa_diasatraso_idx'),
+            models.Index(fields=['monto_multa'], name='Multa_monto_idx')
+        ]
 
 ##############################################################################################################
