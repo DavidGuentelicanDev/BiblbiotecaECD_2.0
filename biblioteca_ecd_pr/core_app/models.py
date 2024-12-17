@@ -12,9 +12,6 @@ class Editorial(models.Model):
     def __str__(self):
         return self.nombre_editorial
 
-    class Meta:
-        indexes = [models.Index(fields=['nombre_editorial'], name='Editorial_nombre_idx')] #index para nombre de editorial
-
 ##############################################################################################################
 
 #Libro
@@ -77,12 +74,6 @@ class Autor(models.Model):
         else:
             return self.nombre_autor
 
-    class Meta:
-        indexes = [
-            models.Index(fields=['nombre_autor'], name='Autor_nombre_idx'),
-            models.Index(fields=['pseudonimo'], name='Autor_pseudonimo_idx')
-        ]
-
 ##############################################################################################################
 
 #Autor por libro
@@ -125,10 +116,7 @@ class Usuario(AbstractUser):
 
     class Meta:
         #indices
-        indexes = [
-            models.Index(fields=['rut'], name='Usuario_rut_idx'),
-            models.Index(fields=['rol'], name='Usuario_rol_idx')
-        ]
+        indexes = [models.Index(fields=['rol'], name='Usuario_rol_idx')]
 
 ##############################################################################################################
 
