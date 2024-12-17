@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import Editorial, Libro, Autor, AutorPorLibro, Usuario
+from .models import Editorial, Libro, Autor, AutorPorLibro, Usuario, Reserva
 
 
 # Clase de usuario para personalizar el Usuario del Admin Django
@@ -28,3 +28,4 @@ admin.site.register(Libro)
 admin.site.register(Autor)
 admin.site.register(AutorPorLibro)
 admin.site.register(Usuario, UsuarioAdmin)
+admin.site.register(Reserva)
