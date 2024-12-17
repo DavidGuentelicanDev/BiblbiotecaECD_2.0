@@ -95,6 +95,11 @@ class AutorPorLibro(models.Model):
 
     class Meta:
         unique_together = ('libro', 'autor') #restriccion unica de ambos campos para emular pk dual con fk de tabla de interseccion
+        #indices
+        indexes = [
+            models.Index(fields=['libro'], name='AutorPorLibro_libro_idx'),
+            models.Index(fields=['autor'], name='AutorPorLibro_autor_idx')
+        ]
 
 ##############################################################################################################
 
