@@ -12,6 +12,9 @@ class Editorial(models.Model):
     def __str__(self):
         return self.nombre_editorial
 
+    class Meta:
+        indexes = [models.Index(fields=['nombre_editorial'], name='Editorial_nombre_idx')]
+
 ##############################################################################################################
 
 #Libro
@@ -162,13 +165,15 @@ class DetalleReserva(models.Model):
 
 #Multa
 class Multa(models.Model):
-    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    usuario         = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     detalle_reserva = models.ForeignKey(DetalleReserva, on_delete=models.CASCADE)
-    dias_atraso = models.PositiveSmallIntegerField(default=1)
-    monto_multa = models.PositiveIntegerField(default=0)
+    dias_atraso     = models.PositiveSmallIntegerField(default=1)
+    monto_multa     = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return f"{self.usuario} - {self.detalle_reserva}"
 
     class Meta:
         unique_together = ('usuario', 'detalle_reserva') #solo puede haber una multa por detallereserva
+
+##############################################################################################################
