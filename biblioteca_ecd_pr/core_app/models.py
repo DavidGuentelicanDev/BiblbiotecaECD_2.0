@@ -44,10 +44,25 @@ class Libro(models.Model):
     titulo       = models.CharField(max_length=50)
     subtitulo    = models.CharField(max_length=50, blank=True, null=True) #opcional
     resena       = models.TextField(blank=True, null=True) #opcional
-    categoria    = models.PositiveSmallIntegerField(choices=CATEGORIAS_LIBRO) #diccionario CATEGORIAS_LIBRO
+    categoria    = models.PositiveSmallIntegerField(
+        choices=CATEGORIAS_LIBRO, #diccionario CATEGORIAS_LIBRO
+        #validacion min y max
+        validators=[
+            MinValueValidator(1, message="Valor mínimo categoria es 1"),
+            MaxValueValidator(5, message="Valor máximo categoria es 5")
+        ]
+    )
     editorial    = models.ForeignKey(Editorial, on_delete=models.CASCADE) #FK de editorial
     portada      = models.ImageField(upload_to='media/', blank=True, null=True) #se carga en carpeta media, opcional
-    estado_libro = models.PositiveSmallIntegerField(choices=ESTADOS_LIBRO, default=1) #diccionario ESTADOS_LIBRO, por defecto 1
+    estado_libro = models.PositiveSmallIntegerField(
+        choices=ESTADOS_LIBRO, #diccionario ESTADOS_LIBRO, por defecto 1
+        default=1, #por defecto 1, Ingresado
+        #validadores min y max
+        validators=[
+            MinValueValidator(1, message="Valor mínimo estado_libro es 1"),
+            MaxValueValidator(8, message="Valor máximo estado_libro es 8")
+        ]
+    )
 
     def __str__(self):
         if (self.subtitulo):
@@ -113,7 +128,15 @@ class Usuario(AbstractUser):
     rut        = models.CharField(unique=True, max_length=12) #unique
     email      = models.EmailField(unique=True) #unique
     telefono   = models.CharField(max_length=15, blank=True, null=True)
-    rol        = models.PositiveSmallIntegerField(choices=ROLES_USUARIO, default=4)
+    rol        = models.PositiveSmallIntegerField(
+        choices=ROLES_USUARIO, #diccionario de roles de usuario
+        default=4, #por defecto 4, Cliente
+        #validadores min y max
+        validators=[
+            MinValueValidator(1, message="Valor mínimo rol es 1"),
+            MaxValueValidator(4, message="Valor máximo rol es 4")
+        ]
+    )
 
     def __str__(self):
         return self.username
@@ -149,8 +172,9 @@ class Reserva(models.Model):
     fecha_retiro       = models.DateField(blank=True, null=True)
     fecha_cancelacion  = models.DateField(blank=True, null=True)
     estado_reserva     = models.PositiveSmallIntegerField(
-        choices=ESTADOS_RESERVA,
-        default=1,
+        choices=ESTADOS_RESERVA, #diccionario de estados reserva
+        default=1, #por defecto 1, Provisoria
+        #valores minimos y maximos para integridad de db
         validators=[
             MinValueValidator(1, message="Valor mínimo de estado_reserva es 1"),
             MaxValueValidator(8, message="Valor máximo de estado_reserva es 8")
@@ -206,7 +230,15 @@ class DetalleReserva(models.Model):
     id_detalle_reserva     = models.BigAutoField(primary_key=True)
     reserva                = models.ForeignKey(Reserva, on_delete=models.CASCADE)
     libro                  = models.ForeignKey(Libro, on_delete=models.CASCADE)
-    estado_detalle_reserva = models.PositiveSmallIntegerField(choices=ESTADOS_DETALLE, default=1)
+    estado_detalle_reserva = models.PositiveSmallIntegerField(
+        choices=ESTADOS_DETALLE, #diccionario estados detalle reserva
+        default=1, #por defecto 1, Reservado
+        #validadores min y max
+        validators=[
+            MinValueValidator(1, message="Valor mínimo estado_detalle_reserva es 1"),
+            MaxValueValidator(5, message="Valor máximo estado_detalle_reserva es 5")
+        ]
+    )
     fecha_max_devolucion   = models.DateField(blank=True, null=True) #se calcula segun la logica de negocio
     fecha_devolucion       = models.DateField(blank=True, null=True)
 
