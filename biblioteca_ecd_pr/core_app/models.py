@@ -154,6 +154,14 @@ class Reserva(models.Model):
     def __str__(self):
         return self.numero_reserva
 
+    class Meta:
+        indexes = [
+            models.Index(fields=['usuario'], name='Reserva_usuario_idx'),
+            models.Index(fields=['fecha_compromiso'], name='Reserva_feccom_idx'),
+            models.Index(fields=['fecha_max_retiro'], name='Reserva_fecmaxret_idx'),
+            models.Index(fields=['estado_reserva'], name='Reserva_estado_idx')
+        ]
+
 ##############################################################################################################
 
 #Detalle reserva
