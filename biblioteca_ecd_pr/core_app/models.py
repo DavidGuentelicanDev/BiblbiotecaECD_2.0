@@ -5,6 +5,7 @@ from datetime import timedelta
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
+from django.core.exceptions import ValidationError
 
 
 # MODELO DE CLASES ORM
@@ -186,6 +187,7 @@ class Reserva(models.Model):
     def __str__(self):
         return str(self.numero_reserva)
 
+
     #metodo save para ir guardando las fechas opcionales segun el cambio de estado
     def save(self, *args, **kwargs):
         #si cambia de provisoria a reservada
@@ -207,6 +209,7 @@ class Reserva(models.Model):
         elif self.estado_reserva == 8 and not self.fecha_cancelacion:
             self.fecha_cancelacion = timezone.now().date() #fecha de cancelacion cuando el cliente cancele o se cancele por nuestro sistema (siempre manual)
         super().save(*args, **kwargs)
+
 
     class Meta:
         #indices
@@ -253,18 +256,24 @@ class DetalleReserva(models.Model):
     def save(self, *args, **kwargs):
         #verificar si es una nueva instancia
         nueva_instancia = self._state.adding
+
+        #validar cantidad_libros de reserva para restringir el limite a n libros (ajustable)
+        if nueva_instancia and self.reserva.cantidad_libros >= 3:
+            raise ValidationError("La cantidad máxima de libros por reserva es 3")
         super().save(*args, **kwargs) #guarda el detalle reserva para luego otras validaciones
+
         #si es una nueva instancia entonces aumenta la cantidad de libros en reserva
         if nueva_instancia:
             self.reserva.cantidad_libros += 1
             self.reserva.save()
 
+
     #cambiar el metodo delete por si se borra un detalle reserva
-    # def delete(self, *args, **kwargs):
-    #     if self.reserva.cantidad_libros > 0:
-    #         self.reserva.cantidad_libros -= 1
-    #         self.reserva.save()
-    #     super().delete(*args, **kwargs)
+    def delete(self, *args, **kwargs):
+        if self.reserva.cantidad_libros > 0:
+            self.reserva.cantidad_libros -= 1
+            self.reserva.save()
+        super().delete(*args, **kwargs)
 
 
     class Meta:
