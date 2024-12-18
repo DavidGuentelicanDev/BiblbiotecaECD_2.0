@@ -273,10 +273,8 @@ class DetalleReserva(models.Model):
 
     #cambiar metodo save para la logica de negocio
     def save(self, *args, **kwargs):
-        #verificar si es una nueva instancia
-        nueva_instancia = self._state.adding
-        #verificar si el estado paso a 3 (devuelto)
-        estado_devuelto = self.estado_detalle_reserva == 3 and self.pk is not None
+        nueva_instancia = self._state.adding #verificar si es una nueva instancia
+        estado_devuelto = self.estado_detalle_reserva == 3 and self.pk is not None #verificar si el estado paso a 3 (devuelto)
 
         #validar cantidad_libros de reserva para restringir el limite a n libros (ajustable)
         if nueva_instancia and self.reserva.cantidad_libros >= 3:
@@ -293,10 +291,16 @@ class DetalleReserva(models.Model):
 
         super().save(*args, **kwargs)
 
-        #si es una nueva instancia entonces aumenta la cantidad de libros en reserva
+        #si es una nueva instancia entonces...
         if nueva_instancia:
+            #cantidad_libros (reserva) +1
             self.reserva.cantidad_libros += 1
             self.reserva.save()
+
+            #estado_libro (libro) cambia a 3 (reservado)
+            if self.estado_detalle_reserva == 1:
+                self.libro.estado_libro = 3
+                self.libro.save()
 
         #si cambia a devuelto
         if estado_devuelto:
