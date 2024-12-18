@@ -289,13 +289,17 @@ class DetalleReserva(models.Model):
         if self.estado_detalle_reserva == 3 and not self.fecha_devolucion:
             self.fecha_devolucion = timezone.now().date()
 
-        #actualizar estado_libro de 3 a 4 si cambia estado_detalle_reserva de 1 a 2
+        #actualizar estado_libro si cambia estado_detalle_reserva
         if not nueva_instancia and self.pk is not None:
             #obetener estado anterior
             estado_anterior = DetalleReserva.objects.get(pk=self.pk).estado_detalle_reserva
             if estado_anterior == 1 and self.estado_detalle_reserva == 2:
                 #cambiar estado_libro a 4
                 self.libro.estado_libro = 4
+                self.libro.save()
+            elif estado_anterior == 2 and self.estado_detalle_reserva == 3:
+                #cambiar estado libro a 5
+                self.libro.estado_libro = 5
                 self.libro.save()
 
         super().save(*args, **kwargs)
