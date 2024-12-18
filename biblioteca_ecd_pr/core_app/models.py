@@ -73,6 +73,7 @@ class Libro(models.Model):
         else:
             return self.titulo
 
+
     class Meta:
         #indices
         indexes = [
@@ -105,6 +106,7 @@ class AutorPorLibro(models.Model):
 
     def __str__(self):
         return f"{self.libro} - {self.autor}"
+
 
     class Meta:
         constraints = [models.UniqueConstraint(fields=['libro', 'autor'], name='AutorPorLibro_libroautor_un')] #unique doble
@@ -143,6 +145,7 @@ class Usuario(AbstractUser):
 
     def __str__(self):
         return self.username
+
 
     class Meta:
         #indices
@@ -203,11 +206,15 @@ class Reserva(models.Model):
             if not self.fecha_max_retiro:
                 self.fecha_max_retiro = timezone.now().date() + timedelta(days=7) #fecha max de retiro +7 dias luego de estar lista para retiro
         #si cambia de lista para retiro a retirada
-        elif self.estado_reserva == 4 and not self.fecha_retiro:
-            self.fecha_retiro = timezone.now().date() #fecha de retiro la fecha en que el cliente retire la reserva
+        elif self.estado_reserva == 4:
+            #fecha de retiro la fecha en que el cliente retire la reserva
+            if not self.fecha_retiro:
+                self.fecha_retiro = timezone.now().date()
+            self.detallereserva_set.filter(estado_detalle_reserva=1).update(estado_detalle_reserva=2) #actualiza el estado_detalle_reserva de reservado a retirado
         #si cambia de cualquier estado a cancelada
         elif self.estado_reserva == 8 and not self.fecha_cancelacion:
             self.fecha_cancelacion = timezone.now().date() #fecha de cancelacion cuando el cliente cancele o se cancele por nuestro sistema (siempre manual)
+
         super().save(*args, **kwargs)
 
 
@@ -227,7 +234,7 @@ class DetalleReserva(models.Model):
     #diccionario estados detalle reserva
     ESTADOS_DETALLE = [
         (1, 'Reservado'), #libro recien reservado
-        (2, 'Prestado'), #libro ya en manos del usuario
+        (2, 'Retirado'), #libro ya en manos del usuario
         (3, 'Devuelto'), #libro devuelto
         (4, 'Atrasado'), #libro no devuelto
         (5, 'Perdido') #libro perdido
