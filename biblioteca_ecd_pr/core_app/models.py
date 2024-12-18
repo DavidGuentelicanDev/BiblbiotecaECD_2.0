@@ -3,7 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
 from datetime import timedelta
 from django.core.validators import MinValueValidator, MaxValueValidator
-from django.db.models.signals import post_delete, post_save
+from django.db.models.signals import post_delete
 from django.dispatch import receiver
 from django.core.exceptions import ValidationError
 
@@ -275,6 +275,8 @@ class DetalleReserva(models.Model):
     def save(self, *args, **kwargs):
         #verificar si es una nueva instancia
         nueva_instancia = self._state.adding
+        #verificar si el estado paso a 3 (devuelto)
+        estado_devuelto = self.estado_detalle_reserva == 3 and self.pk is not None
 
         #validar cantidad_libros de reserva para restringir el limite a n libros (ajustable)
         if nueva_instancia and self.reserva.cantidad_libros >= 3:
@@ -285,11 +287,30 @@ class DetalleReserva(models.Model):
             if not self.fecha_max_devolucion:
                 self.fecha_max_devolucion = timezone.now().date() + timedelta(days=5)
 
+        #guardar fecha devolucion
+        if self.estado_detalle_reserva == 3 and not self.fecha_devolucion:
+            self.fecha_devolucion = timezone.now().date()
+
         super().save(*args, **kwargs)
 
         #si es una nueva instancia entonces aumenta la cantidad de libros en reserva
         if nueva_instancia:
             self.reserva.cantidad_libros += 1
+            self.reserva.save()
+
+        #si cambia a devuelto
+        if estado_devuelto:
+            #obtener todos los detalles reserva de la reserva
+            detalles_asociados = self.reserva.detallereserva_set.all()
+            #contar cuantos estan en estado 3
+            detalles_devueltos = detalles_asociados.filter(estado_detalle_reserva=3).count()
+            #si todos los detalles de la reserva estan en estado 3, cambiar estado de reserva a 6
+            if detalles_devueltos == detalles_asociados.count():
+                self.reserva.estado_reserva = 6
+            #si aun no estan todos los detalles en estado 3, estado de reserva es 5
+            else:
+                self.reserva.estado_reserva = 5
+            #guardar estado de reserva
             self.reserva.save()
 
 
