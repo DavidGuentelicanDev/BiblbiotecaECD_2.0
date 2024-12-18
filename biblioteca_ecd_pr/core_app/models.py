@@ -3,7 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
 from datetime import timedelta
 from django.core.validators import MinValueValidator, MaxValueValidator
-from django.db.models.signals import post_delete
+from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
 from django.core.exceptions import ValidationError
 
@@ -196,24 +196,36 @@ class Reserva(models.Model):
         #si cambia de provisoria a reservada
         if self.estado_reserva == 2:
             if not self.fecha_confirmacion:
-                self.fecha_confirmacion = timezone.now().date() #fecha confirmacion la fecha del sistema
+                #fecha confirmacion la fecha del sistema
+                self.fecha_confirmacion = timezone.now().date()
+
             if not self.fecha_compromiso:
-                self.fecha_compromiso = timezone.now().date() + timedelta(days=2) #fecha de compromiso la fecha del sistema +2
+                #fecha de compromiso la fecha del sistema +2
+                self.fecha_compromiso = timezone.now().date() + timedelta(days=2)
         #si cambia de reservada a lista para retiro
         elif self.estado_reserva == 3:
             if not self.fecha_lista_retiro:
-                self.fecha_lista_retiro = timezone.now().date() #fecha lista para retiro la fecha del sistema
+                #fecha lista para retiro la fecha del sistema
+                self.fecha_lista_retiro = timezone.now().date()
+
             if not self.fecha_max_retiro:
-                self.fecha_max_retiro = timezone.now().date() + timedelta(days=7) #fecha max de retiro +7 dias luego de estar lista para retiro
+                #fecha max de retiro +7 dias luego de estar lista para retiro
+                self.fecha_max_retiro = timezone.now().date() + timedelta(days=7)
         #si cambia de lista para retiro a retirada
         elif self.estado_reserva == 4:
+            #verifica si hay detalles reserva en estado 1 e itera por cada uno
+            detalles = self.detallereserva_set.filter(estado_detalle_reserva=1)
+            for detalle in detalles:
+                detalle.estado_detalle_reserva = 2 #cambia estado detalle reserva a 2
+                detalle.save() #llama al metodo save de detallereserva
+
             #fecha de retiro la fecha en que el cliente retire la reserva
             if not self.fecha_retiro:
                 self.fecha_retiro = timezone.now().date()
-            self.detallereserva_set.filter(estado_detalle_reserva=1).update(estado_detalle_reserva=2) #actualiza el estado_detalle_reserva de reservado a retirado
         #si cambia de cualquier estado a cancelada
         elif self.estado_reserva == 8 and not self.fecha_cancelacion:
-            self.fecha_cancelacion = timezone.now().date() #fecha de cancelacion cuando el cliente cancele o se cancele por nuestro sistema (siempre manual)
+            #fecha de cancelacion cuando el cliente cancele o se cancele por nuestro sistema (siempre manual)
+            self.fecha_cancelacion = timezone.now().date()
 
         super().save(*args, **kwargs)
 
@@ -267,7 +279,13 @@ class DetalleReserva(models.Model):
         #validar cantidad_libros de reserva para restringir el limite a n libros (ajustable)
         if nueva_instancia and self.reserva.cantidad_libros >= 3:
             raise ValidationError("La cantidad máxima de libros por reserva es 3")
-        super().save(*args, **kwargs) #guarda el detalle reserva para luego otras validaciones
+
+        #guardar fecha_max_devolucion para +5 dias cuando cada detallereserva pase a estado retirado
+        if self.estado_detalle_reserva == 2:
+            if not self.fecha_max_devolucion:
+                self.fecha_max_devolucion = timezone.now().date() + timedelta(days=5)
+
+        super().save(*args, **kwargs)
 
         #si es una nueva instancia entonces aumenta la cantidad de libros en reserva
         if nueva_instancia:
@@ -277,9 +295,11 @@ class DetalleReserva(models.Model):
 
     #cambiar el metodo delete por si se borra un detalle reserva
     def delete(self, *args, **kwargs):
+        #si se elimina un detallereserva, -1 a cantidad_libros
         if self.reserva.cantidad_libros > 0:
             self.reserva.cantidad_libros -= 1
             self.reserva.save()
+
         super().delete(*args, **kwargs)
 
 
