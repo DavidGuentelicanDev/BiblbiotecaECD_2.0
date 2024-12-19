@@ -56,7 +56,7 @@ class Libro(models.Model):
         ]
     )
     editorial    = models.ForeignKey(Editorial, on_delete=models.CASCADE) #FK de editorial
-    portada      = models.ImageField(upload_to='media/', blank=True, null=True) #se carga en carpeta media, opcional
+    portada      = models.ImageField(upload_to='media/images/', blank=True, null=True) #se carga en carpeta media, opcional
     estado_libro = models.PositiveSmallIntegerField(
         choices=ESTADOS_LIBRO, #diccionario ESTADOS_LIBRO, por defecto 1
         default=1, #por defecto 1, Ingresado
@@ -375,6 +375,7 @@ class Multa(models.Model):
 
     def __str__(self):
         return f"{self.usuario} - {self.detalle_reserva}"
+
 
     class Meta:
         constraints = [models.UniqueConstraint(fields=['usuario', 'detalle_reserva'], name='Multa_usuariodetalle_un')] #unique doble
