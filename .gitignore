@@ -8,6 +8,7 @@ media
 
 # Ambiente Virtual y Proyecto #
 ecd_env
+usuarios.txt
 
 # Backup files # 
 *.bak 
