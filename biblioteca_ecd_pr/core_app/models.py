@@ -223,9 +223,21 @@ class Reserva(models.Model):
             if not self.fecha_retiro:
                 self.fecha_retiro = timezone.now().date()
         #si cambia de cualquier estado a cancelada
-        elif self.estado_reserva == 8 and not self.fecha_cancelacion:
+        elif self.estado_reserva == 8:
             #fecha de cancelacion cuando el cliente cancele o se cancele por nuestro sistema (siempre manual)
-            self.fecha_cancelacion = timezone.now().date()
+            if not self.fecha_cancelacion:
+                self.fecha_cancelacion = timezone.now().date()
+
+            #cambia estado de todos los detalle reserva asociados a cancelado
+            detalles = self.detallereserva_set.all()
+            for detalle in detalles:
+                if detalle.estado_detalle_reserva != 6:
+                    detalle.estado_detalle_reserva = 6
+                    detalle.save()
+
+            #cambia el estado de los libros asociados a disponible
+            libros_asociados = self.detallereserva_set.values_list('libro', flat=True)
+            Libro.objects.filter(codigo_libro__in=libros_asociados).update(estado_libro=2)
 
         super().save(*args, **kwargs)
 
@@ -249,7 +261,8 @@ class DetalleReserva(models.Model):
         (2, 'Retirado'), #libro ya en manos del usuario
         (3, 'Devuelto'), #libro devuelto
         (4, 'Atrasado'), #libro no devuelto
-        (5, 'Perdido') #libro perdido
+        (5, 'Perdido'), #libro perdido
+        (6, 'Cancelado') #reserva cancelada
     ]
 
     id_detalle_reserva     = models.BigAutoField(primary_key=True)
@@ -261,7 +274,7 @@ class DetalleReserva(models.Model):
         #validadores min y max
         validators=[
             MinValueValidator(1, message="Valor mínimo estado_detalle_reserva es 1"),
-            MaxValueValidator(5, message="Valor máximo estado_detalle_reserva es 5")
+            MaxValueValidator(6, message="Valor máximo estado_detalle_reserva es 6")
         ]
     )
     fecha_max_devolucion   = models.DateField(blank=True, null=True) #se calcula segun la logica de negocio
