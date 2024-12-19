@@ -18,7 +18,7 @@ class Editorial(models.Model):
     def __str__(self):
         return self.nombre_editorial
 
-##############################################################################################################
+#####################################################################################################################################
 
 #Libro
 class Libro(models.Model):
@@ -83,7 +83,7 @@ class Libro(models.Model):
             models.Index(fields=['estado_libro'], name='Libro_estado_idx')
         ]
 
-##############################################################################################################
+#####################################################################################################################################
 
 #Autor
 class Autor(models.Model):
@@ -97,7 +97,7 @@ class Autor(models.Model):
         else:
             return self.nombre_autor
 
-##############################################################################################################
+#####################################################################################################################################
 
 #Autor por libro
 class AutorPorLibro(models.Model):
@@ -116,7 +116,7 @@ class AutorPorLibro(models.Model):
             models.Index(fields=['autor'], name='AutorPorLibro_autor_idx')
         ]
 
-##############################################################################################################
+#####################################################################################################################################
 
 #Usuario, usando clase abstracta para aprovechar todos los metodos prediseñados de django
 class Usuario(AbstractUser):
@@ -151,7 +151,7 @@ class Usuario(AbstractUser):
         #indices
         indexes = [models.Index(fields=['rol'], name='Usuario_rol_idx')]
 
-##############################################################################################################
+#####################################################################################################################################
 
 #Reserva
 class Reserva(models.Model):
@@ -239,7 +239,7 @@ class Reserva(models.Model):
             models.Index(fields=['estado_reserva'], name='Reserva_estado_idx')
         ]
 
-##############################################################################################################
+#####################################################################################################################################
 
 #Detalle reserva
 class DetalleReserva(models.Model):
@@ -351,7 +351,7 @@ class DetalleReserva(models.Model):
             models.Index(fields=['fecha_max_devolucion'], name='DetalleReserva_fecmaxdev_idx')
         ]
 
-##############################################################################################################
+#####################################################################################################################################
 
 #Multa
 class Multa(models.Model):
@@ -373,14 +373,21 @@ class Multa(models.Model):
             models.Index(fields=['monto_multa'], name='Multa_monto_idx')
         ]
 
-##############################################################################################################
+#####################################################################################################################################
 
 
 #SEÑALES PARA POST_SAVE Y POST_DELETE
 
-#Señal para disminuir cantidad_libros de reserva al eliminiar un detallereserva
+#señal para disminuir cantidad_libros de reserva al eliminiar un detallereserva
 @receiver(post_delete, sender=DetalleReserva)
 def actualizar_cantidad_libros_al_eliminar(sender, instance, **kwargs):
     if instance.reserva.cantidad_libros > 0:
         instance.reserva.cantidad_libros -= 1
         instance.reserva.save()
+
+#señal para cambiar estado_libro a disponible si el detallereserva asociado es eliminado
+@receiver(post_delete, sender=DetalleReserva)
+def actualizar_estado_libro_eliminando_detalle_reserva(sender, instance, **kwargs):
+    #cambia estado_libro a 2
+    instance.libro.estado_libro = 2
+    instance.libro.save()
