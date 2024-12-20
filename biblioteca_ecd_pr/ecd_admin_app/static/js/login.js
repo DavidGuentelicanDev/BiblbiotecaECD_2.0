@@ -22,8 +22,40 @@ document.getElementById("link_recuperarContrasena").addEventListener("click", fu
 
     Swal.fire({
         title: "Recuperar Contraseña",
-        input: "email",
+        input: "text",
         inputLabel: "Ingresa tu correo electrónico de Biblioteca ECD",
-        inputPlaceholder: "correo@bibliotecaecd.cl"
+        inputPlaceholder: "correo@bibliotecaecd.cl",
+        confirmButtonText: "Enviar",
+        showCancelButton: true,
+        inputValidator: (value) => {
+            //verificar si esta vacio
+            if (!value) {
+                return "Debes ingresar un correo electrónico";
+            }
+
+            //validar formato email personalizado
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(value)) {
+                return "Por favor, ingresa un correo electrónico válido.";
+            }
+            //si todo esta ok, no hay mensaje
+            return null;
+        },
+        preConfirm: (value) => {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve(value)
+                }, 500);
+            });
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire({
+                icon: "success",
+                title: "Correo enviado",
+                text: `Se han enviado instrucciones al correo: ${result.value} para recuperar la contraseña`,
+                confirmButtonText: "Aceptar"
+            });
+        }
     });
 });
