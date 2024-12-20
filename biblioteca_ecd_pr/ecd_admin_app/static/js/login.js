@@ -2,16 +2,16 @@
 (() => {
     'use strict'
 
-    const forms = document.querySelectorAll('.needs-validation')
+    const forms = document.querySelectorAll('.needs-validation');
 
     Array.from(forms).forEach(form => {
         form.addEventListener('submit', event => {
             if (!form.checkValidity()) {
-                event.preventDefault()
-                event.stopPropagation()
+                event.preventDefault();
+                event.stopPropagation();
             }
 
-        form.classList.add('was-validated')
+        form.classList.add('was-validated');
         }, false)
     });
 })()
@@ -58,4 +58,21 @@ document.getElementById("link_recuperarContrasena").addEventListener("click", fu
             });
         }
     });
+});
+
+//boton de ojo para mostrar/ocultar contraseña
+document.getElementById("btn_contrasena").addEventListener("click", function() {
+    const contrasenaVisible = document.getElementById("txt_contrasena");
+    const icono = document.getElementById("icon_contrasena");
+
+    //alternar el tipo de texto entre password y text para invisible y visible respectivamente
+    if (contrasenaVisible.type === "password") {
+        contrasenaVisible.type = "text";
+        icono.classList.remove("bi bi-eye-fill");
+        icono.classList.add("bi bi-eye-slash-fill");
+    } else {
+        contrasenaVisible.type = "password";
+        icono.classList.remove("bi bi-eye-slash-fill");
+        icono.classList.add("bi bi-eye-fill");
+    }
 });

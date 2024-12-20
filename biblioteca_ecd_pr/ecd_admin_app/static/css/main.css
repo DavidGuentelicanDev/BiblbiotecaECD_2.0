@@ -7,3 +7,15 @@
     background: url("../assets/images/background_libros.jpg") no-repeat center center fixed;
     background-size: cover;
 }
+
+/* OJO CONTRASEÑA */
+#btn_contrasena {
+    border: none;
+    background-color: rgb(34, 36, 36);
+    cursor: pointer;
+}
+
+#btn_contrasena:focus {
+    outline: none;
+    box-shadow: none;
+}
