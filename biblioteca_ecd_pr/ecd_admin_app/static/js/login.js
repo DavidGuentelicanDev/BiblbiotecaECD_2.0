@@ -15,3 +15,15 @@
         }, false)
     });
 })()
+
+//recuperar contraseña
+document.getElementById("link_recuperarContrasena").addEventListener("click", function(event) {
+    event.preventDefault(); //evitar que la pagina se recargue
+
+    Swal.fire({
+        title: "Recuperar Contraseña",
+        input: "email",
+        inputLabel: "Ingresa tu correo electrónico de Biblioteca ECD",
+        inputPlaceholder: "correo@bibliotecaecd.cl"
+    });
+});

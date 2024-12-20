@@ -8,6 +8,13 @@
     width: 150px;
 }
 
+/* icono */
+.icono {
+    width: 100px;
+    height: 100px;
+    border: 2px solid #000;
+}
+
 /* FOOTER */
 .footer {
     background-color: rgb(14, 14, 14);
@@ -23,11 +30,4 @@
 .footer a {
     color: #255aba;
     margin: 0 0.5rem;
-}
-
-/* icono */
-.icono {
-    width: 100px;
-    height: 100px;
-    border: 2px solid #000;
 }
