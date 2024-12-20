@@ -8,27 +8,30 @@
         <title>ADMIN ECD</title>
         <!--css-->
         <link rel="stylesheet" href="{% static 'css/main.css' %}"></link>
-        <link rel="stylesheet" href="{% static 'css/login/login.css' %}"></link>
+        <link rel="stylesheet" href="{% static 'css/login.css' %}"></link>
         <!--bootstrap-->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     </head>
     <body>
         <div class="background contenido-body">
+            <!--formulario login-->
             <div class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
                 <div class="card" style="width: 40rem;">
                     <h1 class="card-title text-center mt-3">Inicio de sesión</h1>
-                    <form class="mt-3 mb-3 mx-3">
+                    <form class="needs-validation mt-3 mb-3 mx-3" novalidate>
                         <div class="form-floating">
-                            <input id="txt_usuario" type="text" class="form-control" placeholder="Usuario">
+                            <input id="txt_usuario" type="text" class="form-control" placeholder="Usuario" required />
                             <label for="txt_usuario" class="form-label">Ingresa tu Usuario</label>
+                            <div class="invalid-feedback">Debes ingresar un usuario</div>
                         </div>
                         <div class="form-floating mt-2">
-                            <input id="txt_contrasena" type="password" class="form-control" placeholder="Contraseña">
+                            <input id="txt_contrasena" type="password" class="form-control" placeholder="Contraseña" required />
                             <label for="txt_contrasena" class="form-label">Ingresa tu Contraseña</label>
+                            <div class="invalid-feedback">Debes ingresar una contraseña</div>
                         </div>
                         <div class="d-flex justify-content-between align-items-center mt-2">
                             <a href="#" class="text-decoration-none">¿Has olvidado tu contraseña? Recupérala aquí</a>
-                            <button id="btn_ingresar" class="btn btn-primary btn-ingresar">Ingresar</button>
+                            <button type="submit" id="btn_ingresar" class="btn btn-primary btn-ingresar">Ingresar</button>
                         </div>
                     </form>
                 </div>
@@ -47,7 +50,7 @@
         </footer>
 
         <!--js-->
-        <script src="{% static 'js/login/login.js' %}"></script>
+        <script src="{% static 'js/login.js' %}"></script>
         <!--bootstrap js-->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
         <!--sweetalert2-->

@@ -15,22 +15,18 @@
 
 /* FOOTER */
 .footer {
-    background-color: rgba(14, 14, 14, 0.95); /* Fondo oscuro semitransparente */
-    color: #e8e8e8; /* Texto blanco */
+    background-color: rgba(14, 14, 14, 0.95);
+    color: #f0eaea;
     padding: 1rem 0;
     position: fixed;
     bottom: 0;
-    width: 100%; /* Ocupa todo el ancho de la página */
+    width: 100%;
     text-align: center;
     font-size: 0.9rem;
     z-index: 10;
 }
 
 .footer a {
-    color: #e8e8e8; /* Enlaces en blanco */
+    color: #f0eaea;
     margin: 0 0.5rem;
-}
-
-.footer a:hover {
-    text-decoration: underline; /* Subrayado al pasar el mouse */
 }
