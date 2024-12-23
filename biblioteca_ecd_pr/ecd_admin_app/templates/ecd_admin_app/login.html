@@ -22,14 +22,15 @@
                         <img class="icono" src="{% static 'assets/icons/libros.png' %}" alt="Icono libros" class="rounded-circle" />
                     </div>
                     <h3 class="card-title text-center mt-3">Inicio de sesión</h3>
-                    <form class="needs-validation mt-3 mb-3 mx-3" novalidate>
+                    <form id="form_loginAdm" method="POST" class="needs-validation mt-3 mb-3 mx-3" novalidate>
+                        {% csrf_token %}
                         <div class="form-floating">
-                            <input id="txt_usuario" type="text" class="form-control" placeholder="Usuario" required />
+                            <input id="txt_usuario" name="usuarioLogin" type="text" class="form-control" placeholder="Usuario" required />
                             <label for="txt_usuario" class="form-label">Ingresa tu Usuario</label>
                             <div class="invalid-feedback">Debes ingresar un usuario</div>
                         </div>
                         <div class="form-floating mt-2">
-                            <input id="txt_contrasena" type="password" class="form-control" placeholder="Contraseña" required />
+                            <input id="txt_contrasena" name="contrasenaLogin" type="password" class="form-control" placeholder="Contraseña" required />
                             <label for="txt_contrasena" class="form-label">Ingresa tu Contraseña</label>
                             <div class="invalid-feedback">Debes ingresar una contraseña</div>
                             <button type="button" id="btn_contrasena" class="btn btn-outline-secondary btn-sm position-absolute top-50 translate-middle-y me-2" style="right: 1.3rem;" tabindex="-1">
@@ -43,7 +44,6 @@
                     </form>
                 </div>
             </div>
-
             <!--footer-->
             <footer class="footer">
                 <div class="container text-center">

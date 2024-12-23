@@ -16,7 +16,7 @@
     });
 })()
 
-//recuperar contraseña
+//recuperar contraseña con sweetalert2
 document.getElementById("link_recuperarContrasena").addEventListener("click", function(event) {
     event.preventDefault(); //evitar que la pagina se recargue
 
@@ -30,7 +30,7 @@ document.getElementById("link_recuperarContrasena").addEventListener("click", fu
         inputValidator: (value) => {
             //verificar si esta vacio
             if (!value) {
-                return "Debes ingresar un correo electrónico";
+                return "Debes ingresar un correo electrónico.";
             }
 
             //validar formato email personalizado
@@ -53,7 +53,7 @@ document.getElementById("link_recuperarContrasena").addEventListener("click", fu
             Swal.fire({
                 icon: "success",
                 title: "Correo enviado",
-                text: `Se han enviado instrucciones al correo: ${result.value} para recuperar la contraseña`,
+                text: `Se han enviado instrucciones al correo: ${result.value} para recuperar la contraseña.`,
                 confirmButtonText: "Aceptar"
             });
         }
@@ -75,4 +75,68 @@ document.getElementById("btn_contrasena").addEventListener("click", function() {
         icono.classList.remove("bi bi-eye-slash-fill");
         icono.classList.add("bi bi-eye-fill");
     }
+});
+
+//login
+document.addEventListener("DOMContentLoaded", function() {
+    //constantes y variables del html
+    const formulario = document.getElementById("form_loginAdm");
+    let usuario = document.getElementById("txt_usuario");
+    let contrasena = document.getElementById("txt_contrasena");
+
+    //evento del envio del form
+    formulario.addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        if (!usuario.value.trim() || !contrasena.value.trim()) {
+            console.log("Campos vacíos, no se envía la solicitud");
+            return;
+        }
+
+        //obtener datos del form
+        let datosFormulario = new FormData(formulario);
+        let datos = Object.fromEntries(datosFormulario);
+
+        //enviar datos con fetch
+        fetch("adm_login/", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": datosFormulario.get("csrfmiddlewaretoken"),
+                'Content-Type': "application/json"
+            },
+            body: JSON.stringify(datos)
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            if (data.status == "success") {
+                //redirigir a la pagina principal de la app
+                Swal.fire({
+                    title: "Éxito",
+                    text: "Login exitoso",
+                    icon: "success",
+                    confirmButtonText: "Aceptar"
+                }).then(() => {
+                    window.location.href = "home/";
+                });
+            } else {
+                //error
+                Swal.fire({
+                    title: "Error",
+                    text: data.message || "Credenciales inválidas",
+                    icon: "error",
+                    confirmButtonText: "Aceptar"
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            Swal.fire({
+                title: "Error",
+                text: "Ocurrió un problema al iniciar sesión",
+                icon: "warning",
+                confirmButtonText: "Aceptar"
+            });
+        });
+    });
 });
