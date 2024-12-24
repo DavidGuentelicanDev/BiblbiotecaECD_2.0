@@ -30,15 +30,23 @@ document.addEventListener("DOMContentLoaded", function() {
                     .then((response) => response.json())
                     .then((data) => {
                         console.log(data);
+
                         if (data.status === "success") {
                             //redirigir al login
                             Swal.fire({
                                 title: "Cerrando sesión",
                                 text: "Serás redirigido al inicio de sesión...",
                                 icon: "success",
-                                confirmButtonText: "OK"
-                            }).then(() => {
-                                window.location.href = "/biblioteca_admin/";
+                                allowOutsideClick: false,
+                                showConfirmButton: false,
+                                timer: 2000,
+                                didOpen: () => {
+                                    Swal.showLoading();
+                                }
+                            }).then((result) => {
+                                if (result.dismiss === Swal.DismissReason.timer) {
+                                    window.location.href = "/biblioteca_admin/";
+                                }
                             });
                         } else {
                             //error si no se pudo cargar el logout

@@ -122,8 +122,24 @@ document.addEventListener("DOMContentLoaded", function() {
         .then(data => {
             Swal.close(); //cerrar sweetalert de carga
             console.log(data);
+
+            //redirigir a la pagina principal de la app
             if (data.status === "success") {
-                window.location.href = "home/"; //redirigir a la pagina principal de la app
+                Swal.fire({
+                    title: "Login correcto",
+                    text: "Redirigiendo a la página principal...",
+                    icon: "success",
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    timer: 2000,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                }).then((result) => {
+                    if (result.dismiss === Swal.DismissReason.timer) {
+                        window.location.href = "home/";
+                    }
+                });
             } else if (data.status === "error") {
                 //errores
                 if (data.message === "No tienes permisos para acceder") {
