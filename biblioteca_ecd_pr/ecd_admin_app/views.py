@@ -54,12 +54,16 @@ def bibliotecario_requerido(user):
 def administrador_requerido(user):
     return user.rol == 1
 
+#pagina sin permisos
+def sin_permisos(request):
+    return render(request, 'ecd_admin_app/sin_acceso.html')
+
 ######################################################################################################################################
 
 #Home
 
 #pagina principal
-@login_required
-@user_passes_test(staff_requerido)
+@login_required(login_url='/biblioteca_admin/sin_permisos/')
+@user_passes_test(staff_requerido, login_url='/biblioteca_admin/sin_permisos/')
 def home(request):
     return render(request, 'ecd_admin_app/home.html')

@@ -6,4 +6,5 @@ urlpatterns = [
     path('adm_login/', views.adm_login, name='login'), #ruta para login
     path('home/', views.home, name='principal'), #ruta pagina principal
     path('adm_logout/', views.adm_logout, name='logout'), #ruta de logout
+    path('sin_permisos/', views.sin_permisos, name='sin_acceso'), #pagina sin permisos
 ]
