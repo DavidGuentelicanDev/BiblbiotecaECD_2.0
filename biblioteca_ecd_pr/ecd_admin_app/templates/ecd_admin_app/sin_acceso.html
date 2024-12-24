@@ -14,22 +14,27 @@
     </head>
     <body>
         <div class="background">
-            <h1>No tienes permisos</h1>
-            <!--footer-->
-            <footer class="footer">
-                <div class="container text-center">
-                    <p class="mb-0">&copy; 2024 ADMIN ECD. Todos los derechos reservados.</p>
-                    <p class="mb-0">
-                        <a href="#" class="text-decoration-none">Política de privacidad</a> | 
-                        <a href="#" class="text-decoration-none">Términos y condiciones</a>
-                    </p>
+            <div class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+                <div class="card w-75">
+                    <div class="card-body">
+                        <h2 class="card-title text-center mt-2">No tienes permisos</h2>
+                        <div class="d-flex justify-content-center mt-3">
+                            <img class="icono" src="{% static 'assets/icons/sin_permisos.png' %}" alt="Icono libros" class="rounded-circle" />
+                        </div>
+                        <p class="card-text text-center mt-3">No tienes los permisos para acceder a esta sección. Si necesitas acceso, contáctate con tu jefatura para poder revisar tu usuario.</p>
+                        <div class="d-flex justify-content-center mt-2 mb-2">
+                            <a id="btn_volverLogin" class="btn btn-dark" style="max-width: 200px;">Volver al Inicio</a>
+                        </div>
+                    </div>
                 </div>
-            </footer>
+            </div>
         </div>
 
         <!--js-->
         <script src="{% static 'js/sin_acceso.js' %}"></script>
         <!--bootstrap js-->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+        <!--sweetalert2-->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </body>
 </html>
