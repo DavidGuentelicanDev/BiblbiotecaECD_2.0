@@ -6,7 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 
 
-#Login
+#Login, permisos y Logout
 
 #pagina login
 def inicio_sesion_page(request):
@@ -33,6 +33,11 @@ def adm_login(request):
             return JsonResponse({"status": "error", "message": f"Error procesando la solicitud: {str(e)}"})
     else:
         return JsonResponse({"status": "error", "message": "Método no permitido"}, status=405)
+
+#logout
+def adm_logout(request):
+    logout(request)
+    return JsonResponse({"status": "success"})
 
 ######################################################################################################################################
 

@@ -114,24 +114,16 @@ document.addEventListener("DOMContentLoaded", function() {
             method: "POST",
             headers: {
                 "X-CSRFToken": datosFormulario.get("csrfmiddlewaretoken"),
-                'Content-Type': "application/json"
+                "Content-Type": "application/json"
             },
             body: JSON.stringify(datos)
         })
         .then(response => response.json())
         .then(data => {
-            Swal.close(); //cerrar sweet alert de carga
+            Swal.close(); //cerrar sweetalert de carga
             console.log(data);
             if (data.status === "success") {
-                //redirigir a la pagina principal de la app
-                Swal.fire({
-                    title: "Éxito",
-                    text: "Login exitoso",
-                    icon: "success",
-                    confirmButtonText: "Aceptar"
-                }).then(() => {
-                    window.location.href = "home/";
-                });
+                window.location.href = "home/"; //redirigir a la pagina principal de la app
             } else if (data.status === "error") {
                 //errores
                 if (data.message === "No tienes permisos para acceder") {
@@ -139,25 +131,26 @@ document.addEventListener("DOMContentLoaded", function() {
                         title: data.message,
                         text: "Ponte en contacto con tu jefatura para poder gestionar los permisos necesarios.",
                         icon: "warning",
-                        confirmButtonText: "Aceptar"
+                        confirmButtonText: "Entendido"
                     });
                 } else if (data.message === "Credenciales inválidas") {
                     Swal.fire({
                         title: data.message,
                         text: "Debes ingresar un usuario y una contraseña válidas para acceder.",
                         icon: "error",
-                        confirmButtonText: "Aceptar"
+                        confirmButtonText: "Entendido"
                     });
                 }
             }
         })
         .catch(error => {
+            Swal.close(); //cerrar sweetalert de carga
             console.error('Error:', error);
             Swal.fire({
                 title: "Error",
                 text: "Ocurrió un problema al iniciar sesión: " + error,
                 icon: "error",
-                confirmButtonText: "Aceptar"
+                confirmButtonText: "Entendido"
             });
         });
     });
