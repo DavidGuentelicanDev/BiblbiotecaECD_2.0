@@ -13,6 +13,7 @@ def inicio_sesion_page(request):
     return render(request, 'ecd_admin_app/login.html')
 
 #login
+@csrf_exempt
 def adm_login(request):
     if request.method == 'POST':
         try:
