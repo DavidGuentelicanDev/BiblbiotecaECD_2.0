@@ -4,7 +4,7 @@
     margin: 0;
     padding: 0;
     height: 100vh;
-    background: url("../assets/images/background_libros.jpg") no-repeat center center fixed;
+    background: url("assets/images/background_libros.jpg") no-repeat center center fixed;
     background-size: cover;
 }
 
