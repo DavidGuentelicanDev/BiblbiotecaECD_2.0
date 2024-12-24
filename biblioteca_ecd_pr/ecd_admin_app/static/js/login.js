@@ -93,6 +93,18 @@ document.addEventListener("DOMContentLoaded", function() {
             return;
         }
 
+        //sweetalert de carga
+        let alertCargando = Swal.fire({
+            title: "Cargando",
+            text: "Validando las credenciales, por favor espera...",
+            icon: "info",
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            didOpen: () => {
+                Swal.showLoading(); //spinner de carga sweetalert2
+            }
+        });
+
         //obtener datos del form
         let datosFormulario = new FormData(formulario);
         let datos = Object.fromEntries(datosFormulario);
@@ -108,8 +120,9 @@ document.addEventListener("DOMContentLoaded", function() {
         })
         .then(response => response.json())
         .then(data => {
+            Swal.close(); //cerrar sweet alert de carga
             console.log(data);
-            if (data.status == "success") {
+            if (data.status === "success") {
                 //redirigir a la pagina principal de la app
                 Swal.fire({
                     title: "Éxito",
@@ -119,22 +132,31 @@ document.addEventListener("DOMContentLoaded", function() {
                 }).then(() => {
                     window.location.href = "home/";
                 });
-            } else {
-                //error
-                Swal.fire({
-                    title: "Error",
-                    text: data.message || "Credenciales inválidas",
-                    icon: "error",
-                    confirmButtonText: "Aceptar"
-                });
+            } else if (data.status === "error") {
+                //errores
+                if (data.message === "No tienes permisos para acceder") {
+                    Swal.fire({
+                        title: data.message,
+                        text: "Ponte en contacto con tu jefatura para poder gestionar los permisos necesarios.",
+                        icon: "warning",
+                        confirmButtonText: "Aceptar"
+                    });
+                } else if (data.message === "Credenciales inválidas") {
+                    Swal.fire({
+                        title: data.message,
+                        text: "Debes ingresar un usuario y una contraseña válidas para acceder.",
+                        icon: "error",
+                        confirmButtonText: "Aceptar"
+                    });
+                }
             }
         })
         .catch(error => {
             console.error('Error:', error);
             Swal.fire({
                 title: "Error",
-                text: "Ocurrió un problema al iniciar sesión",
-                icon: "warning",
+                text: "Ocurrió un problema al iniciar sesión: " + error,
+                icon: "error",
                 confirmButtonText: "Aceptar"
             });
         });
