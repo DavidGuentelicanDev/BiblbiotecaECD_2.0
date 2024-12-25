@@ -60,7 +60,7 @@ def sin_permisos(request):
 
 ######################################################################################################################################
 
-#Home
+#Home y Perfil
 
 #pagina principal
 @login_required(login_url='/biblioteca_admin/sin_permisos/')
