@@ -42,8 +42,10 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="#">Listado de Libros</a></li>
-                                <li><a class="dropdown-item" href="#">Autores</a></li>
-                                <li><a class="dropdown-item" href="#">Editoriales</a></li>
+                                {% if user.rol == 1 or user.rol == 2 %}
+                                    <li><a class="dropdown-item" href="#">Autores</a></li>
+                                    <li><a class="dropdown-item" href="#">Editoriales</a></li>
+                                {% endif %}
                             </ul>
                         </li>
                         <li class="nav-item dropdown">
@@ -53,9 +55,13 @@
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="#">Listado de Clientes</a></li>
                                 <li><a class="dropdown-item" href="#">Multas</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="#">Listado de Usuarios</a></li>
-                                <li><a class="dropdown-item" href="#">Gestión de Usuarios</a></li>
+                                {% if user.rol == 1 or user.rol == 2 %}
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="#">Listado de Usuarios</a></li>
+                                    {% if user.rol == 1 %}
+                                        <li><a class="dropdown-item" href="#">Gestión de Usuarios</a></li>
+                                    {% endif %}
+                                {% endif %}
                             </ul>
                         </li>
                     </ul>
@@ -68,6 +74,7 @@
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                                 <li class="dropdown-item">{{ user.get_full_name|default:user.username }}</li>
                                 <li><a class="dropdown-item" href="#">Perfil</a></li>
+                                <li><a class="dropdown-item" href="#">Cambiar Contraseña</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <form method="POST">
