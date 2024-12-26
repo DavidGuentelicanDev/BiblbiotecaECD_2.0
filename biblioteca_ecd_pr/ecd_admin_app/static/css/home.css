@@ -1,0 +1,6 @@
+/* para las cards */
+@media (max-width: 576px) {
+    .card {
+        width: 12rem;
+    }
+}
